@@ -12,11 +12,13 @@ import com.blogspot.blogsetyaaji.mytodolist.R;
 
 class MyMenuAdapter extends RecyclerView.Adapter<MyMenuViewHolder> {
     String[] menu;
+    int[] gambar;
     Activity activity;
 
-    public MyMenuAdapter(FragmentActivity activity, String[] menuApp) {
+    public MyMenuAdapter(FragmentActivity activity, String[] menuApp, int[] menuGambar) {
         // memasukkan data dari parameter ke variable di dalam class
         menu = menuApp;
+        gambar = menuGambar;
         this.activity = activity;
     }
 
@@ -32,6 +34,7 @@ class MyMenuAdapter extends RecyclerView.Adapter<MyMenuViewHolder> {
     public void onBindViewHolder(@NonNull MyMenuViewHolder holder, int position) {
         // memasang data ke layout view holder
         holder.txtmenuitem.setText(menu[position]);
+        holder.imgmenuitem.setImageResource(gambar[position]);
     }
 
     @Override

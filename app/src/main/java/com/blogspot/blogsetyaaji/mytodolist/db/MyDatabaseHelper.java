@@ -1,5 +1,6 @@
 package com.blogspot.blogsetyaaji.mytodolist.db;
 
+import android.content.ContentValues;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
@@ -32,5 +33,28 @@ public class MyDatabaseHelper extends SQLiteOpenHelper {
 
         // buat tabel lagi
         onCreate(sqLiteDatabase);
+    }
+
+    // fungsi untuk menyimpan data
+    public long simpanData(String nama, String deskripsi, String kategori) {
+        // akses database untuk menambah data
+        SQLiteDatabase sqLiteDatabase = this.getWritableDatabase();
+
+        // komponen untuk menyimpan value data
+        ContentValues contentValues = new ContentValues();
+        // masukkan data ke dalam contentValue
+        contentValues.put(Todo.COLUMN_NAMA, nama);
+        contentValues.put(Todo.COLUMN_DESKRIPSI, deskripsi);
+        contentValues.put(Todo.COLUMN_KATEGORI, kategori);
+
+        // masukkan data row
+        long id = sqLiteDatabase.insert(Todo.NAMA_TABEL, null,
+                contentValues);
+
+        // tutup database
+        sqLiteDatabase.close();
+
+        // keluarkan hasil id dari proses menyimpan data
+        return id;
     }
 }

@@ -21,7 +21,7 @@ public class Todo {
             + COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
             + COLUMN_NAMA + " TEXT,"
             + COLUMN_DESKRIPSI + " TEXT,"
-            + COLUMN_WAKTU + " TEXT,"
+            + COLUMN_WAKTU + " DATETIME DEFAULT CURRENT_TIMESTAMP,"
             + COLUMN_KATEGORI + " TEXT" + ")";
 
     // constructor untuk memasukkan data ke dalam class model ini

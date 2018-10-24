@@ -33,6 +33,10 @@ public class Todo {
         this.kategori = kategori;
     }
 
+    public Todo() {
+
+    }
+
 
     public int getId() {
         return id;

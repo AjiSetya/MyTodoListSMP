@@ -2,11 +2,15 @@ package com.blogspot.blogsetyaaji.mytodolist.db;
 
 import android.content.ContentValues;
 import android.content.Context;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.support.annotation.Nullable;
 
 import com.blogspot.blogsetyaaji.mytodolist.model.Todo;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class MyDatabaseHelper extends SQLiteOpenHelper {
 
@@ -56,5 +60,84 @@ public class MyDatabaseHelper extends SQLiteOpenHelper {
 
         // keluarkan hasil id dari proses menyimpan data
         return id;
+    }
+
+    // mengambil 1 row data berdasarkan id
+    public Todo getTodo(long id) {
+        // minta akses mengambil data
+        SQLiteDatabase sqLiteDatabase = this.getReadableDatabase();
+
+        // posisikaan cursor tabel ke data yang dituju
+        Cursor cursor = sqLiteDatabase.query(Todo.NAMA_TABEL,
+                new String[]{Todo.COLUMN_ID, Todo.COLUMN_NAMA, Todo.COLUMN_DESKRIPSI,
+                        Todo.COLUMN_WAKTU, Todo.COLUMN_KATEGORI},
+                Todo.COLUMN_ID + "?=",
+                new String[]{String.valueOf(id)}, null, null, null,
+                null);
+
+        // posisikan data yang dipilih cursor ke paling atas/
+        // posisikan cursor ke data
+        if (cursor != null)
+            cursor.moveToFirst();
+
+        // data yang ditemukan cursor dimasukkan ke dalam model
+        Todo todo = new Todo(
+                cursor.getInt(cursor.getColumnIndex(Todo.COLUMN_ID)),
+                cursor.getString(cursor.getColumnIndex(Todo.COLUMN_NAMA)),
+                cursor.getString(cursor.getColumnIndex(Todo.COLUMN_DESKRIPSI)),
+                cursor.getString(cursor.getColumnIndex(Todo.COLUMN_WAKTU)),
+                cursor.getString(cursor.getColumnIndex(Todo.COLUMN_KATEGORI))
+        );
+
+        // hilngkan cursor beserta koneksi database
+        cursor.close();
+        // kembalikan data
+        return todo;
+    }
+
+    // mengambil seluruh data
+    public List<Todo> ambilSemuaData() {
+        List<Todo> listTodo = new ArrayList<>();
+
+        // Query mengambil semua data
+        String query = "SELECT * FROM " + Todo.NAMA_TABEL + " ORDER BY " +
+                Todo.COLUMN_WAKTU + " DESC";
+
+        SQLiteDatabase sqLiteDatabase = this.getWritableDatabase();
+        Cursor cursor = sqLiteDatabase.rawQuery(query, null);
+
+        // masukkan data ke list
+        if (cursor.moveToFirst()){
+            do {
+                Todo todo = new Todo();
+                todo.setId(cursor.getInt(cursor.getColumnIndex(Todo.COLUMN_ID)));
+                todo.setNama(cursor.getString(cursor.getColumnIndex(Todo.COLUMN_NAMA)));
+                todo.setDeskripsi(cursor.getString(cursor.getColumnIndex(Todo.COLUMN_DESKRIPSI)));
+                todo.setWaktu(cursor.getString(cursor.getColumnIndex(Todo.COLUMN_WAKTU)));
+                todo.setKategori(cursor.getString(cursor.getColumnIndex(Todo.COLUMN_KATEGORI)));
+
+                listTodo.add(todo);
+            } while (cursor.moveToNext());
+        }
+
+        // tutup koneksi, hilangkan cursor
+        sqLiteDatabase.close();
+
+        return listTodo;
+    }
+
+    public int ambilJumlahData() {
+        // query mengambil seluruh data
+        String query = "SELECT * FROM " + Todo.NAMA_TABEL;
+        // buka database, izin membaca data
+        SQLiteDatabase sqLiteDatabase = this.getReadableDatabase();
+        // arahkan cursor pada data yang dituju
+        Cursor cursor = sqLiteDatabase.rawQuery(query, null);
+        // tampung jumlah seluruh data di variable
+        int jumlah = cursor.getCount();
+        // tutup database
+        cursor.close();
+        // hasilkan jumlah data
+        return jumlah;
     }
 }

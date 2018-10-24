@@ -24,9 +24,12 @@ import android.widget.Toast;
 import com.blogspot.blogsetyaaji.mytodolist.Fragment.DoneFragment;
 import com.blogspot.blogsetyaaji.mytodolist.Fragment.MenuFragment;
 import com.blogspot.blogsetyaaji.mytodolist.Fragment.TodoFragment;
+import com.blogspot.blogsetyaaji.mytodolist.db.MyDatabaseHelper;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
+
+    private MyDatabaseHelper myDatabaseHelper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,8 +42,7 @@ public class MainActivity extends AppCompatActivity
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
+                tampilDialogTodo();
             }
         });
 
@@ -52,6 +54,36 @@ public class MainActivity extends AppCompatActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+    }
+
+    private void tampilDialogTodo() {
+        // tempelkan layout ke dalam view
+        LayoutInflater layoutInflater = LayoutInflater.from(this);
+        View view = layoutInflater.inflate(R.layout.dialog_todo, null);
+        // pasang view ke dalam alertdialog
+        AlertDialog.Builder alertDialogInput = new AlertDialog.Builder(this);
+        alertDialogInput.setView(view);
+        // inisialisasi komponen dalam dialog
+        EditText edInNama = view.findViewById(R.id.edInNama);
+        EditText edInDesk = view.findViewById(R.id.edInDesk);
+        TextView txtInTitle = view.findViewById(R.id.txtInTitle);
+
+        txtInTitle.setText("New TOdo");
+
+        alertDialogInput
+                .setCancelable(false)
+                .setPositiveButton("Simpan", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+
+                    }
+                })
+                .setNegativeButton("Batal", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+
+                    }
+                });
     }
 
     @Override

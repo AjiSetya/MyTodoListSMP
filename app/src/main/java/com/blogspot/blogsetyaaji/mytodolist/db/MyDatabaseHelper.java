@@ -107,7 +107,7 @@ public class MyDatabaseHelper extends SQLiteOpenHelper {
         Cursor cursor = sqLiteDatabase.rawQuery(query, null);
 
         // masukkan data ke list
-        if (cursor.moveToFirst()){
+        if (cursor.moveToFirst()) {
             do {
                 Todo todo = new Todo();
                 todo.setId(cursor.getInt(cursor.getColumnIndex(Todo.COLUMN_ID)));
@@ -139,5 +139,24 @@ public class MyDatabaseHelper extends SQLiteOpenHelper {
         cursor.close();
         // hasilkan jumlah data
         return jumlah;
+    }
+
+    public int updateTodo(Todo todo) {
+        SQLiteDatabase sqLiteDatabase = this.getWritableDatabase();
+
+        ContentValues values = new ContentValues();
+        values.put(Todo.COLUMN_NAMA, todo.getNama());
+        values.put(Todo.COLUMN_DESKRIPSI, todo.getDeskripsi());
+        values.put(Todo.COLUMN_KATEGORI, todo.getKategori());
+
+        return sqLiteDatabase.update(Todo.NAMA_TABEL, values, Todo.COLUMN_ID + " = ? ",
+                new String[]{String.valueOf(todo.getId())});
+    }
+
+    public void hapusData(Todo todo) {
+        SQLiteDatabase sqLiteDatabase = this.getWritableDatabase();
+        sqLiteDatabase.delete(Todo.NAMA_TABEL, Todo.COLUMN_ID + " = ? ",
+                new String[]{String.valueOf(todo.getId())});
+        sqLiteDatabase.close();
     }
 }

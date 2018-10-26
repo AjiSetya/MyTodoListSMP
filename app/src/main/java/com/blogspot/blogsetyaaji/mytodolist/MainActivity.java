@@ -25,6 +25,7 @@ import com.blogspot.blogsetyaaji.mytodolist.Fragment.DoneFragment;
 import com.blogspot.blogsetyaaji.mytodolist.Fragment.MenuFragment;
 import com.blogspot.blogsetyaaji.mytodolist.Fragment.TodoFragment;
 import com.blogspot.blogsetyaaji.mytodolist.db.MyDatabaseHelper;
+import com.blogspot.blogsetyaaji.mytodolist.model.Todo;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -64,12 +65,12 @@ public class MainActivity extends AppCompatActivity
         AlertDialog.Builder alertDialogInput = new AlertDialog.Builder(this);
         alertDialogInput.setView(view);
         // inisialisasi komponen dalam dialog
-        EditText edInNama = view.findViewById(R.id.edInNama);
-        EditText edInDesk = view.findViewById(R.id.edInDesk);
+        final EditText edInNama = view.findViewById(R.id.edInNama);
+        final EditText edInDesk = view.findViewById(R.id.edInDesk);
         TextView txtInTitle = view.findViewById(R.id.txtInTitle);
-
+        // mengatur judul dialog
         txtInTitle.setText("New TOdo");
-
+        // membuat tombol dialoog
         alertDialogInput
                 .setCancelable(false)
                 .setPositiveButton("Simpan", new DialogInterface.OnClickListener() {
@@ -84,6 +85,30 @@ public class MainActivity extends AppCompatActivity
 
                     }
                 });
+        // memaasang tombol ke alert dialog
+        final AlertDialog alertDialog = alertDialogInput.create();
+        alertDialog.show();
+
+        alertDialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                // cek apakah kode kosong
+                if (TextUtils.isEmpty(edInNama.getText().toString())) {
+                    edInNama.setError("Nama tidak boleh kosong");
+                    edInNama.requestFocus();
+                } else if (TextUtils.isEmpty(edInDesk.getText().toString())) {
+                    edInDesk.setError("Deskripsi tidak boleh kosong");
+                    edInDesk.requestFocus();
+                } else {
+                    alertDialog.dismiss();
+                }
+
+                // simpan data ke database
+                // simpna ke database dan dapatkan id data yang baru saja disimpan
+                myDatabaseHelper.simpanData(edInNama.getText().toString(),
+                        edInDesk.getText().toString(), "todo");
+            }
+        });
     }
 
     @Override

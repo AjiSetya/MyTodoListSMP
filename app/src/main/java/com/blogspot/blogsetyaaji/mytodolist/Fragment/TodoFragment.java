@@ -7,11 +7,16 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.Spinner;
+import android.widget.TextView;
 
 import com.blogspot.blogsetyaaji.mytodolist.R;
 import com.blogspot.blogsetyaaji.mytodolist.db.MyDatabaseHelper;
@@ -93,7 +98,7 @@ public class TodoFragment extends Fragment {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
                 if (i == 0) {
-                    //tampilEditDialog(todoList.get(posisi), posisi);
+                    tampilEditDialog(todoList.get(posisi), posisi);
                 } else {
                     hapusTodo(posisi);
                 }
@@ -111,6 +116,80 @@ public class TodoFragment extends Fragment {
         todoAdapter.notifyItemRemoved(posisi);
         // tampilkna pesan data kosong ketika menghapus data terakhir
         aturTodoKosong();
+    }
+
+    private void tampilEditDialog(final Todo todo, final int posisi) {
+        // tempelkan layout ke dalam view
+        LayoutInflater layoutInflater = LayoutInflater.from(getActivity());
+        View view = layoutInflater.inflate(R.layout.dialog_edit, null);
+        // pasang view ke dalam alertdialog
+        android.support.v7.app.AlertDialog.Builder alertDialogInput = new android.support.v7.app.AlertDialog.Builder(getActivity());
+        alertDialogInput.setView(view);
+        // inisialisasi komponen dalam dialog
+        final EditText edENama = view.findViewById(R.id.edENama);
+        final EditText edEDesk = view.findViewById(R.id.edEDesk);
+        TextView txtETitle = view.findViewById(R.id.txtETitle);
+        Spinner spkategori = view.findViewById(R.id.spedit);
+        final String[] kategori = {null};
+        spkategori.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                kategori[0] = getResources().getStringArray(R.array.itemkategori)[i];
+
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+
+            }
+        });
+        // mengatur judul dialog
+        txtETitle.setText("Edit Todo");
+        // membuat tombol dialoog
+        alertDialogInput
+                .setCancelable(false)
+                .setPositiveButton("Simpan", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+
+                    }
+                })
+                .setNegativeButton("Batal", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+
+                    }
+                });
+        // memaasang tombol ke alert dialog
+        final android.support.v7.app.AlertDialog alertDialog = alertDialogInput.create();
+        alertDialog.show();
+
+        alertDialog.getButton(android.support.v7.app.AlertDialog.BUTTON_POSITIVE).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                // cek apakah kode kosong
+                if (TextUtils.isEmpty(edENama.getText().toString())) {
+                    edENama.setError("Nama tidak boleh kosong");
+                    edENama.requestFocus();
+                } else if (TextUtils.isEmpty(edEDesk.getText().toString())) {
+                    edEDesk.setError("Deskripsi tidak boleh kosong");
+                    edEDesk.requestFocus();
+                } else {
+                    // simpan data ke database
+                    // simpna ke database dan dapatkan id data yang baru saja disimpan
+                    todo.setNama(edENama.getText().toString());
+                    todo.setDeskripsi(edEDesk.getText().toString());
+                    todo.setKategori(kategori[0]);
+                    // proses update database
+                    myDatabaseHelper.updateTodo(todo);
+                    // mengatur posisi yang diubah
+                    todoList.set(posisi, todo);
+
+                    aturTodoKosong();
+                    alertDialog.dismiss();
+                }
+            }
+        });
     }
 
     private void aturTodoKosong() {

@@ -15,4 +15,10 @@
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="lbl_title">Give Your Feedback</string>
     <string name="hint_enter_feedback">Enter feedback</string>
+    <string name="kategori">Kategori</string>
+    <string-array name="itemkategori">
+        <item>Todo</item>
+        <item>Progress</item>
+        <item>Done</item>
+    </string-array>
 </resources>

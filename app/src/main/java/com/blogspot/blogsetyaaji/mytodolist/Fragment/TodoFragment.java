@@ -1,8 +1,11 @@
 package com.blogspot.blogsetyaaji.mytodolist.Fragment;
 
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -13,6 +16,8 @@ import android.widget.LinearLayout;
 import com.blogspot.blogsetyaaji.mytodolist.R;
 import com.blogspot.blogsetyaaji.mytodolist.db.MyDatabaseHelper;
 import com.blogspot.blogsetyaaji.mytodolist.model.Todo;
+import com.blogspot.blogsetyaaji.mytodolist.utils.ClickListener;
+import com.blogspot.blogsetyaaji.mytodolist.utils.RecyclerClickListener;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -58,7 +63,65 @@ public class TodoFragment extends Fragment {
 
         todoAdapter = new TodoAdapter(getActivity(), todoList);
 
+        lvTodo.setLayoutManager(new LinearLayoutManager(getActivity()));
+        lvTodo.setAdapter(todoAdapter);
+
+        lvTodo.addOnItemTouchListener(new RecyclerClickListener(getActivity(),
+                lvTodo, new ClickListener() {
+            @Override
+            public void OnClick(View view, int posisi) {
+
+            }
+
+            @Override
+            public void onLongClick(View view, int posisi) {
+                tampilDialogAksi(posisi);
+            }
+        }));
+
+        aturTodoKosong();
+
         return view;
+    }
+
+    private void tampilDialogAksi(final int posisi) {
+        CharSequence teksTombol[] = new CharSequence[]{"Edit", "Delete"};
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        builder.setTitle("Pilihan");
+        builder.setItems(teksTombol, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                if (i == 0) {
+                    //tampilEditDialog(todoList.get(posisi), posisi);
+                } else {
+                    hapusTodo(posisi);
+                }
+            }
+        });
+        builder.show();
+    }
+
+    private void hapusTodo(int posisi) {
+        // hapus data
+        myDatabaseHelper.hapusData(todoList.get(posisi));
+        // hapus data dari model
+        todoList.remove(posisi);
+        // hapus data dari adapter
+        todoAdapter.notifyItemRemoved(posisi);
+        // tampilkna pesan data kosong ketika menghapus data terakhir
+        aturTodoKosong();
+    }
+
+    private void aturTodoKosong() {
+        // cek apakah data kosong
+        // jika kosong maka tampilkan pesan kosong
+
+        if (myDatabaseHelper.ambilJumlahData() > 0) {
+            todoKosong.setVisibility(View.GONE);
+        } else {
+            todoKosong.setVisibility(View.VISIBLE);
+        }
     }
 
 }

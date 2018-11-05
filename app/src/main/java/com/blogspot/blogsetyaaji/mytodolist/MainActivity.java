@@ -55,6 +55,8 @@ public class MainActivity extends AppCompatActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+
+        myDatabaseHelper = new MyDatabaseHelper(this);
     }
 
     private void tampilDialogTodo() {
@@ -100,13 +102,12 @@ public class MainActivity extends AppCompatActivity
                     edInDesk.setError("Deskripsi tidak boleh kosong");
                     edInDesk.requestFocus();
                 } else {
+                    // simpan data ke database
+                    // simpna ke database dan dapatkan id data yang baru saja disimpan
+                    myDatabaseHelper.simpanData(edInNama.getText().toString(),
+                            edInDesk.getText().toString(), "todo");
                     alertDialog.dismiss();
                 }
-
-                // simpan data ke database
-                // simpna ke database dan dapatkan id data yang baru saja disimpan
-                myDatabaseHelper.simpanData(edInNama.getText().toString(),
-                        edInDesk.getText().toString(), "todo");
             }
         });
     }

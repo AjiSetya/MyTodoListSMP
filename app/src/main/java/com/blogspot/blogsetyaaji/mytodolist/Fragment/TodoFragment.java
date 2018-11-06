@@ -13,6 +13,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
@@ -130,6 +131,20 @@ public class TodoFragment extends Fragment {
         final EditText edEDesk = view.findViewById(R.id.edEDesk);
         TextView txtETitle = view.findViewById(R.id.txtETitle);
         Spinner spkategori = view.findViewById(R.id.spedit);
+        // tampilkan data sekarang ke dalam komponen dialog
+        edENama.setText(todo.getNama());
+        edEDesk.setText(todo.getDeskripsi());
+        // menampilkan kategori data di spinner
+        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(getActivity(),
+                R.array.itemkategori,
+                android.R.layout.simple_spinner_item);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spkategori.setAdapter(adapter);
+        if (todo.getKategori() != null) {
+            int spinnerPosition = adapter.getPosition(todo.getKategori());
+            spkategori.setSelection(spinnerPosition);
+        }
+        // mengambil item dari spinner untuk disimpan
         final String[] kategori = {null};
         spkategori.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override

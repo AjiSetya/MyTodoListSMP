@@ -159,4 +159,36 @@ public class MyDatabaseHelper extends SQLiteOpenHelper {
                 new String[]{String.valueOf(todo.getId())});
         sqLiteDatabase.close();
     }
+
+    public List<Todo> ambilSemuaDataDone() {
+        List<Todo> listTodo = new ArrayList<>();
+
+        SQLiteDatabase sqLiteDatabase = this.getWritableDatabase();
+        // posisikaan cursor tabel ke data yang dituju
+        Cursor cursor = sqLiteDatabase.query(Todo.NAMA_TABEL,
+                new String[]{Todo.COLUMN_ID, Todo.COLUMN_NAMA, Todo.COLUMN_DESKRIPSI,
+                        Todo.COLUMN_WAKTU, Todo.COLUMN_KATEGORI},
+                Todo.COLUMN_KATEGORI + "?=",
+                new String[]{"Done"}, null, null, null,
+                null);
+
+        // masukkan data ke list
+        if (cursor.moveToFirst()) {
+            do {
+                Todo todo = new Todo();
+                todo.setId(cursor.getInt(cursor.getColumnIndex(Todo.COLUMN_ID)));
+                todo.setNama(cursor.getString(cursor.getColumnIndex(Todo.COLUMN_NAMA)));
+                todo.setDeskripsi(cursor.getString(cursor.getColumnIndex(Todo.COLUMN_DESKRIPSI)));
+                todo.setWaktu(cursor.getString(cursor.getColumnIndex(Todo.COLUMN_WAKTU)));
+                todo.setKategori(cursor.getString(cursor.getColumnIndex(Todo.COLUMN_KATEGORI)));
+
+                listTodo.add(todo);
+            } while (cursor.moveToNext());
+        }
+
+        // tutup koneksi, hilangkan cursor
+        sqLiteDatabase.close();
+
+        return listTodo;
+    }
 }

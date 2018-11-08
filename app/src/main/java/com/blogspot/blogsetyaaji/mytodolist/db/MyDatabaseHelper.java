@@ -71,7 +71,7 @@ public class MyDatabaseHelper extends SQLiteOpenHelper {
         Cursor cursor = sqLiteDatabase.query(Todo.NAMA_TABEL,
                 new String[]{Todo.COLUMN_ID, Todo.COLUMN_NAMA, Todo.COLUMN_DESKRIPSI,
                         Todo.COLUMN_WAKTU, Todo.COLUMN_KATEGORI},
-                Todo.COLUMN_ID + "?=",
+                Todo.COLUMN_ID + " ? =",
                 new String[]{String.valueOf(id)}, null, null, null,
                 null);
 
@@ -99,12 +99,11 @@ public class MyDatabaseHelper extends SQLiteOpenHelper {
     public List<Todo> ambilSemuaData() {
         List<Todo> listTodo = new ArrayList<>();
 
-        // Query mengambil semua data
-        String query = "SELECT * FROM " + Todo.NAMA_TABEL + " ORDER BY " +
-                Todo.COLUMN_WAKTU + " DESC";
+        String query = "SELECT * FROM " + Todo.NAMA_TABEL + " WHERE " +
+                Todo.COLUMN_KATEGORI + " = ?";
 
         SQLiteDatabase sqLiteDatabase = this.getWritableDatabase();
-        Cursor cursor = sqLiteDatabase.rawQuery(query, null);
+        Cursor cursor = sqLiteDatabase.rawQuery(query, new String[]{"Todo"});
 
         // masukkan data ke list
         if (cursor.moveToFirst()) {
@@ -127,12 +126,11 @@ public class MyDatabaseHelper extends SQLiteOpenHelper {
     }
 
     public int ambilJumlahData() {
-        // query mengambil seluruh data
-        String query = "SELECT * FROM " + Todo.NAMA_TABEL;
-        // buka database, izin membaca data
-        SQLiteDatabase sqLiteDatabase = this.getReadableDatabase();
-        // arahkan cursor pada data yang dituju
-        Cursor cursor = sqLiteDatabase.rawQuery(query, null);
+        String query = "SELECT * FROM " + Todo.NAMA_TABEL + " WHERE " +
+                Todo.COLUMN_KATEGORI + " = ?";
+
+        SQLiteDatabase sqLiteDatabase = this.getWritableDatabase();
+        Cursor cursor = sqLiteDatabase.rawQuery(query, new String[]{"Todo"});
         // tampung jumlah seluruh data di variable
         int jumlah = cursor.getCount();
         // tutup database
@@ -163,15 +161,12 @@ public class MyDatabaseHelper extends SQLiteOpenHelper {
     public List<Todo> ambilSemuaDataDone() {
         List<Todo> listTodo = new ArrayList<>();
 
-        SQLiteDatabase sqLiteDatabase = this.getWritableDatabase();
-        // posisikaan cursor tabel ke data yang dituju
-        Cursor cursor = sqLiteDatabase.query(Todo.NAMA_TABEL,
-                new String[]{Todo.COLUMN_ID, Todo.COLUMN_NAMA, Todo.COLUMN_DESKRIPSI,
-                        Todo.COLUMN_WAKTU, Todo.COLUMN_KATEGORI},
-                Todo.COLUMN_KATEGORI + "?=",
-                new String[]{"Done"}, null, null, null,
-                null);
+        // Query mengambil semua data
+        String query = "SELECT * FROM " + Todo.NAMA_TABEL + " WHERE " +
+                Todo.COLUMN_KATEGORI + " = ?";
 
+        SQLiteDatabase sqLiteDatabase = this.getWritableDatabase();
+        Cursor cursor = sqLiteDatabase.rawQuery(query, new String[]{"Done"});
         // masukkan data ke list
         if (cursor.moveToFirst()) {
             do {
@@ -190,5 +185,21 @@ public class MyDatabaseHelper extends SQLiteOpenHelper {
         sqLiteDatabase.close();
 
         return listTodo;
+    }
+
+    public int ambilJumlahDataDone() {
+        // query mengambil seluruh data
+        // Query mengambil semua data
+        String query = "SELECT * FROM " + Todo.NAMA_TABEL + " WHERE " +
+                Todo.COLUMN_KATEGORI + " = ?";
+
+        SQLiteDatabase sqLiteDatabase = this.getWritableDatabase();
+        Cursor cursor = sqLiteDatabase.rawQuery(query, new String[]{"Done"});
+        // tampung jumlah seluruh data di variable
+        int jumlah = cursor.getCount();
+        // tutup database
+        cursor.close();
+        // hasilkan jumlah data
+        return jumlah;
     }
 }

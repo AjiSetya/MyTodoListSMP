@@ -5,10 +5,17 @@
     android:layout_height="match_parent"
     tools:context=".Fragment.TodoFragment">
 
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/lvTodo"
+    <android.support.v4.widget.SwipeRefreshLayout
+        android:id="@+id/todoSwipe"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent">
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/lvTodo"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+    </android.support.v4.widget.SwipeRefreshLayout>
 
     <LinearLayout
         android:id="@+id/todoKosong"

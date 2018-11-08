@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">MyTodoList</string>
+    <string name="app_name">My TodoList</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
     <string name="nav_header_title">Android Studio</string>
@@ -16,6 +16,17 @@
     <string name="lbl_title">Give Your Feedback</string>
     <string name="hint_enter_feedback">Enter feedback</string>
     <string name="kategori">Kategori</string>
+    <string name="mn_progres">Progress</string>
+    <string name="newtodo">New Todo</string>
+    <string name="save">Save</string>
+    <string name="cancel">Cancel</string>
+    <string name="send">Send</string>
+    <string name="edit">Edit</string>
+    <string name="delete">Delete</string>
+    <string name="edittodo">Edit Todo</string>
+    <string name="nama_kosong">Please fill the name</string>
+    <string name="desc_kosong">Please fill the description</string>
+    <string name="option">Option</string>
     <string-array name="itemkategori">
         <item>Todo</item>
         <item>Progress</item>

@@ -5,6 +5,7 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
@@ -34,6 +35,7 @@ import java.util.List;
 public class TodoFragment extends Fragment {
 
     private RecyclerView lvTodo;
+    private SwipeRefreshLayout todoSwipe;
     private List<Todo> todoList = new ArrayList<>();
     private LinearLayout todoKosong;
     private TodoAdapter todoAdapter;
@@ -61,16 +63,25 @@ public class TodoFragment extends Fragment {
 
         lvTodo = view.findViewById(R.id.lvTodo);
         todoKosong = view.findViewById(R.id.todoKosong);
+        todoSwipe = view.findViewById(R.id.todoSwipe);
+
+        todoSwipe.setColorSchemeResources(R.color.pink, R.color.indigo, R.color.lime);
 
         myDatabaseHelper = new MyDatabaseHelper(getActivity());
-
-        // meletakkan semua data ke dalam list
-        todoList.addAll(myDatabaseHelper.ambilSemuaData());
 
         todoAdapter = new TodoAdapter(getActivity(), todoList);
 
         lvTodo.setLayoutManager(new LinearLayoutManager(getActivity()));
         lvTodo.setAdapter(todoAdapter);
+
+        tampilData();
+
+        todoSwipe.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                tampilData();
+            }
+        });
 
         lvTodo.addOnItemTouchListener(new RecyclerClickListener(getActivity(),
                 lvTodo, new ClickListener() {
@@ -90,11 +101,20 @@ public class TodoFragment extends Fragment {
         return view;
     }
 
+    private void tampilData() {
+        todoSwipe.setRefreshing(false);
+        todoList.clear();
+        // meletakkan semua data ke dalam list
+        todoList.addAll(myDatabaseHelper.ambilSemuaData());
+        todoAdapter.notifyDataSetChanged();
+        aturTodoKosong();
+    }
+
     private void tampilDialogAksi(final int posisi) {
-        CharSequence teksTombol[] = new CharSequence[]{"Edit", "Delete"};
+        CharSequence teksTombol[] = new CharSequence[]{getString(R.string.edit), getString(R.string.delete)};
 
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-        builder.setTitle("Pilihan");
+        builder.setTitle(R.string.option);
         builder.setItems(teksTombol, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
@@ -159,17 +179,17 @@ public class TodoFragment extends Fragment {
             }
         });
         // mengatur judul dialog
-        txtETitle.setText("Edit Todo");
+        txtETitle.setText(R.string.edittodo);
         // membuat tombol dialoog
         alertDialogInput
                 .setCancelable(false)
-                .setPositiveButton("Simpan", new DialogInterface.OnClickListener() {
+                .setPositiveButton(R.string.save, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
 
                     }
                 })
-                .setNegativeButton("Batal", new DialogInterface.OnClickListener() {
+                .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
 
@@ -184,10 +204,10 @@ public class TodoFragment extends Fragment {
             public void onClick(View view) {
                 // cek apakah kode kosong
                 if (TextUtils.isEmpty(edENama.getText().toString())) {
-                    edENama.setError("Nama tidak boleh kosong");
+                    edENama.setError(getString(R.string.nama_kosong));
                     edENama.requestFocus();
                 } else if (TextUtils.isEmpty(edEDesk.getText().toString())) {
-                    edEDesk.setError("Deskripsi tidak boleh kosong");
+                    edEDesk.setError(getString(R.string.desc_kosong));
                     edEDesk.requestFocus();
                 } else {
                     // simpan data ke database

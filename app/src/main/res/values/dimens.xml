@@ -9,4 +9,8 @@
     <dimen name="activity_margin">16dp</dimen>
     <dimen name="lbl_title">20sp</dimen>
     <dimen name="input_new_feedback">20sp</dimen>
+    <dimen name="dot_height">30dp</dimen>
+    <dimen name="dot_margin_right">10dp</dimen>
+    <dimen name="dot_margin_left">10dp</dimen>
+    <dimen name="dot_text_size">40sp</dimen>
 </resources>

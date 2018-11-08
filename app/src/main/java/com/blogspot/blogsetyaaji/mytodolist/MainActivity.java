@@ -23,6 +23,7 @@ import android.widget.Toast;
 
 import com.blogspot.blogsetyaaji.mytodolist.Fragment.DoneFragment;
 import com.blogspot.blogsetyaaji.mytodolist.Fragment.MenuFragment;
+import com.blogspot.blogsetyaaji.mytodolist.Fragment.ProgressFragment;
 import com.blogspot.blogsetyaaji.mytodolist.Fragment.TodoFragment;
 import com.blogspot.blogsetyaaji.mytodolist.db.MyDatabaseHelper;
 import com.blogspot.blogsetyaaji.mytodolist.model.Todo;
@@ -57,6 +58,10 @@ public class MainActivity extends AppCompatActivity
         navigationView.setNavigationItemSelectedListener(this);
 
         myDatabaseHelper = new MyDatabaseHelper(this);
+
+        MenuFragment menuFragment = new MenuFragment();
+        getSupportFragmentManager().beginTransaction().replace(R.id.container, menuFragment).commit();
+
     }
 
     private void tampilDialogTodo() {
@@ -71,17 +76,17 @@ public class MainActivity extends AppCompatActivity
         final EditText edInDesk = view.findViewById(R.id.edInDesk);
         TextView txtInTitle = view.findViewById(R.id.txtInTitle);
         // mengatur judul dialog
-        txtInTitle.setText("New TOdo");
+        txtInTitle.setText(R.string.newtodo);
         // membuat tombol dialoog
         alertDialogInput
                 .setCancelable(false)
-                .setPositiveButton("Simpan", new DialogInterface.OnClickListener() {
+                .setPositiveButton(R.string.save, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
 
                     }
                 })
-                .setNegativeButton("Batal", new DialogInterface.OnClickListener() {
+                .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
 
@@ -96,16 +101,16 @@ public class MainActivity extends AppCompatActivity
             public void onClick(View view) {
                 // cek apakah kode kosong
                 if (TextUtils.isEmpty(edInNama.getText().toString())) {
-                    edInNama.setError("Nama tidak boleh kosong");
+                    edInNama.setError(getString(R.string.nama_kosong));
                     edInNama.requestFocus();
                 } else if (TextUtils.isEmpty(edInDesk.getText().toString())) {
-                    edInDesk.setError("Deskripsi tidak boleh kosong");
+                    edInDesk.setError(getString(R.string.desc_kosong));
                     edInDesk.requestFocus();
                 } else {
                     // simpan data ke database
                     // simpna ke database dan dapatkan id data yang baru saja disimpan
                     myDatabaseHelper.simpanData(edInNama.getText().toString(),
-                            edInDesk.getText().toString(), "todo");
+                            edInDesk.getText().toString(), "Todo");
                     alertDialog.dismiss();
                 }
             }
@@ -156,6 +161,9 @@ public class MainActivity extends AppCompatActivity
         } else if (id == R.id.nav_todo) {
             TodoFragment todoFragment = new TodoFragment();
             getSupportFragmentManager().beginTransaction().replace(R.id.container, todoFragment).commit();
+        } else if (id == R.id.nav_progress) {
+            ProgressFragment progressFragment = new ProgressFragment();
+            getSupportFragmentManager().beginTransaction().replace(R.id.container, progressFragment).commit();
         } else if (id == R.id.nav_done) {
             DoneFragment doneFragment = new DoneFragment();
             getSupportFragmentManager().beginTransaction().replace(R.id.container, doneFragment).commit();
@@ -181,12 +189,12 @@ public class MainActivity extends AppCompatActivity
 
         alertDialogBuilderUserInput
                 .setCancelable(false)
-                .setPositiveButton("send", new DialogInterface.OnClickListener() {
+                .setPositiveButton(R.string.send, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialogBox, int id) {
 
                     }
                 })
-                .setNegativeButton("cancel",
+                .setNegativeButton(R.string.cancel,
                         new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialogBox, int id) {
                                 dialogBox.cancel();
@@ -201,7 +209,7 @@ public class MainActivity extends AppCompatActivity
             public void onClick(View v) {
                 // Show toast message when no text is entered
                 if (TextUtils.isEmpty(inputFeedback.getText().toString())) {
-                    Toast.makeText(MainActivity.this, "Enter feedback!", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(MainActivity.this, R.string.hint_enter_feedback, Toast.LENGTH_SHORT).show();
                     return;
                 } else {
                     alertDialog.dismiss();

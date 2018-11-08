@@ -1,9 +1,12 @@
 package com.blogspot.blogsetyaaji.mytodolist.Fragment;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.support.annotation.NonNull;
 import android.support.v4.app.FragmentActivity;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.RecyclerView;
+import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -41,6 +44,16 @@ class TodoAdapter extends RecyclerView.Adapter<TodoAdapter.MyTodoViewHolder> {
 
         myTodoViewHolder.txtNamaTodo.setText(todo.getNama());
         myTodoViewHolder.waktuTodo.setText(formatTanggal(todo.getWaktu()));
+
+        if (todo.getKategori().equals("Done")) {
+            myTodoViewHolder.dot.setTextColor(Color.BLUE);
+        } else if (todo.getKategori().equals("Progress")) {
+            myTodoViewHolder.dot.setTextColor(Color.GREEN);
+        } else {
+            myTodoViewHolder.dot.setTextColor(Color.YELLOW);
+        }
+
+        myTodoViewHolder.dot.setText(Html.fromHtml("&#8226;"));
     }
 
     private String formatTanggal(String waktu) {
@@ -67,12 +80,13 @@ class TodoAdapter extends RecyclerView.Adapter<TodoAdapter.MyTodoViewHolder> {
 
     public class MyTodoViewHolder extends RecyclerView.ViewHolder {
 
-        TextView txtNamaTodo, waktuTodo;
+        TextView txtNamaTodo, waktuTodo, dot;
 
         public MyTodoViewHolder(@NonNull View itemView) {
             super(itemView);
 
             txtNamaTodo = itemView.findViewById(R.id.txtNamaTodo);
+            dot = itemView.findViewById(R.id.dot);
             waktuTodo = itemView.findViewById(R.id.waktuTodo);
         }
     }
